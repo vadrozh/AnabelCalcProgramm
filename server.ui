@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>server</class>
+ <widget class="QMainWindow" name="server">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>977</width>
+    <height>398</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Simple Chat Addon</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QTextBrowser" name="textBrowser">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>481</width>
+      <height>361</height>
+     </rect>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pbSend">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>370</y>
+      <width>51</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Send</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="leMessage">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>370</y>
+      <width>321</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="maxLength">
+     <number>255</number>
+    </property>
+    <property name="placeholderText">
+     <string>Enter message</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="leNick">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>370</y>
+      <width>91</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="maxLength">
+     <number>32</number>
+    </property>
+    <property name="placeholderText">
+     <string>Nickname</string>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>490</x>
+      <y>0</y>
+      <width>481</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Connection settings</string>
+    </property>
+    <widget class="QLabel" name="label_6">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>50</y>
+       <width>61</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Port to listen</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>10</y>
+       <width>91</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Connect to Server</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>31</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Port</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lePort">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>50</y>
+       <width>113</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>20333</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_Currentip">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>30</y>
+       <width>113</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>unknown</string>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pbServer">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>30</y>
+       <width>51</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Connect</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pbServer_create">
+     <property name="geometry">
+      <rect>
+       <x>430</x>
+       <y>30</y>
+       <width>51</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Create
+Server</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_ip">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>30</y>
+       <width>113</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>localhost</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_5">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>30</y>
+       <width>47</width>
+       <height>13</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Your IP</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lePort_create">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>50</y>
+       <width>113</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>20333</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_3">
+     <property name="geometry">
+      <rect>
+       <x>350</x>
+       <y>10</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Create Server</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>61</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Server IP</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="cbMode">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>91</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Table Mod</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QTableWidget" name="tableWidget">
+    <property name="geometry">
+     <rect>
+      <x>490</x>
+      <y>90</y>
+      <width>481</width>
+      <height>301</height>
+     </rect>
+    </property>
+    <row>
+     <property name="text">
+      <string>Result 0</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>Result 1</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>Result 2</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>Result 3</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>Result 4</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>Result 5</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>Result 6</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>Result 7</string>
+     </property>
+    </row>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
