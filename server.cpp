@@ -1,9 +1,10 @@
+/*
+ * TODO: шифрование прикрутить(?)
+ *
+*/
 #include "server.h"
 #include "ui_server.h"
 #include <mainwindow.h>
-#include <QNetworkInterface>
-#include <qmath.h>
-#include <QRegExpValidator>
 server::server(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::server)
@@ -14,18 +15,14 @@ server::server(QWidget *parent) :
     showTrayIcon();
     show();
     ui->textBrowser->append("                                           Welcome to Simple Chat Addon");
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
    // QNetworkRequest request(QUrl("http://ipinfo.io/ip"));
     QNetworkRequest request(QUrl("http://www.grio.ru/myip.php"));
     QNetworkReply *reply = manager->get(request);
     connect(reply,SIGNAL(finished()),this,SLOT(replyFinished()));
     ui->tableWidget->setEnabled(false);
     connect(ui->cbMode,SIGNAL(clicked(bool)),ui->tableWidget,SLOT(setEnabled(bool)));
-    cli = new QTcpSocket(this);
-    srv = new QTcpServer(this);
     QIcon ico(QApplication::applicationDirPath()+"/ico.png");
     setWindowIcon(ico);
-    QValidator *valid = new QRegExpValidator(QRegExp("[a-zA-Z0-9А-Яа-я ]+"),this);
     ui->leNick->setValidator(valid);
 }
 server::~server()
@@ -43,19 +40,15 @@ void server::replyFinished(){
             QString data = codec->toUnicode(content.data());
             //data.chop(1);
             ui->le_Currentip->setText(data);
-          //  ui->le_ip->setText(data);
         }
-      else ui->textBrowser->append("[SYSTEM]Can't connect to server - "+reply->errorString());
+      else ui->textBrowser->append("[SYSTEM]Can't connect to IP looking server - <br>"+reply->errorString());
       reply->deleteLater();
 }
 
 void server::closeEvent(QCloseEvent *event){
-    //if (cli->state() == QTcpSocket::ConnectedState)
-   // {
-        cli->write("[SERVER]Client [" +ui->leNick->text().toUtf8()+ "] disconnected.");
-        cli->close();
-        srv->close();
-   // }
+    cli->write("[SERVER]Client [" +ui->leNick->text().toUtf8()+ "] disconnected.");
+    cli->close();
+    srv->close();
     event->accept();
 }
 
@@ -69,7 +62,6 @@ void server::createServer(int port)
     connect(srv,SIGNAL(newConnection()),this,SLOT(addNewClient()));
     QString msg =  QString::number(port);
     ui->textBrowser->append(QTime::currentTime().toString().toUtf8()+" - [SYSTEM]Server started. Your Port - " + msg +". Your IP - "+ui->le_Currentip->text());
-    //ui->textBrowser->append(QString(QHostAddress::setAddress));
     ui->pbSend->setEnabled(true);
 
 }
@@ -86,10 +78,8 @@ void server::createClient(QString address, int port)
 void server::addNewClient()
 {
     QTcpSocket* clientSocket = srv->nextPendingConnection();
-
     connect(clientSocket, SIGNAL(disconnected()), this, SLOT(disconnectClient()));
     connect(clientSocket, SIGNAL(readyRead()), this, SLOT(readFromClient()));
-
     clientList.append(clientSocket);
     ui->textBrowser->append(QTime::currentTime().toString().toUtf8()+" - [SERVER]New client connected.");
     sendToClient(clientSocket, QTime::currentTime().toString().toUtf8()+" - "+"[SERVER]You're connected!");
@@ -115,17 +105,17 @@ void server::readFromClient()
     }
     if (ui->cbMode->isChecked())
     {
-    QString remMessage = message;
-    remMessage.remove(0,remMessage.indexOf("]")+1);
-    data = remMessage.split(" ");
-    if (data.size() == 4) {
-        QString nick = message.mid(1,message.indexOf("]")-1);
-        if (!nickList.contains(nick)){
-            nickList << nick;
-            if (nickList.size() != ui->tableWidget->columnCount()){
-                ui->tableWidget->setColumnCount(ui->tableWidget->columnCount()+1);
-            }
-            ui->tableWidget->setHorizontalHeaderLabels(nickList);
+        QString remMessage = message;
+        remMessage.remove(0,remMessage.indexOf("]")+1);
+        data = remMessage.split(" ");
+        if (data.size() == 4) {
+            QString nick = message.mid(1,message.indexOf("]")-1);
+            if (!nickList.contains(nick)){
+                nickList << nick;
+                if (nickList.size() != ui->tableWidget->columnCount()){
+                    ui->tableWidget->setColumnCount(ui->tableWidget->columnCount()+1);
+                }
+                ui->tableWidget->setHorizontalHeaderLabels(nickList);
         }
         QString numOfRow = data.at(0);
         QString x = data.at(1);
@@ -133,10 +123,9 @@ void server::readFromClient()
         QString z = data.at(3);
         double i = (sqrt(x.toInt()^2 +y.toInt()^2 +z.toInt()^2));
         //ui->tableWidget->item(numOfRow.toInt(),nickList.indexOf(nick))->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEditable|Qt::ItemIsDragEnabled|Qt::ItemIsUserCheckable|Qt::ItemIsEnabled);
-        QTableWidgetItem *itab = new QTableWidgetItem;
+        QTableWidgetItem *itab = new QTableWidgetItem();
         itab->setText(QString::number(i));
         ui->tableWidget->setItem(numOfRow.toInt(),nickList.indexOf(nick),itab);
-       // ui->tableWidget->item(numOfRow.toInt(),nickList.indexOf(nick))->setText(QString::number(i));
         }
     }
     foreach (QTcpSocket* client, clientList) {
@@ -167,16 +156,10 @@ void server::serverConnected()
 
 void server::sendToServer()
 {
-//    if (ui->cbMode->isChecked()) {
-//        QString message = ui->leMessage->text();
-//        cli->write(message.toUtf8());
-//        ui->leMessage->clear();
-//    } else {
     if (!ui->leMessage->text().isEmpty()){
         if (!ui->leNick->text().isEmpty())
     {
     QString message = "["+ui->leNick->text()+"]"+ui->leMessage->text();
-   // QString message = ui->leMessage->text();
     cli->write(message.toUtf8());
     ui->leMessage->clear();
     } else {
@@ -185,7 +168,6 @@ void server::sendToServer()
     } else {
         ui->textBrowser->append("[ERROR]Message can't be empty");
     }
-    //}
 }
 
 void server::on_pbServer_clicked()

@@ -33,10 +33,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     QHBoxLayout *Layout = new QHBoxLayout();
     Layout->addWidget(MainTabWidget);
-    MainTabWidget->setGeometry(0,0,1366,768);
+    MainTabWidget->setGeometry(0,0,1362,741);
 
 
-    //MainTabWidget->show();
+    MainTabWidget->show();
 
     ui->setupUi(this);
     ui->mainToolBar->hide();

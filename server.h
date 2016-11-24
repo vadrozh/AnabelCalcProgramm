@@ -12,6 +12,11 @@
 #include <QMenu>
 #include <QIcon>
 #include <QStringList>
+#include <QValidator>
+#include <QNetworkInterface>
+#include <qmath.h>
+#include <QRegExpValidator>
+#include <QTableWidgetItem>
 namespace Ui {
 class server;
 }
@@ -62,6 +67,8 @@ private:
     QAction *quitAction;
     QSystemTrayIcon *trayIcon;
     QStringList data;
+    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+    QValidator *valid = new QRegExpValidator(QRegExp("[a-zA-Z0-9А-Яа-я ]+"),this);
 };
 
 #endif // SERVER_H
