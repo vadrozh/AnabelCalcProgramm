@@ -1,5 +1,5 @@
 /*
- * TODO: шифрование прикрутить(?)
+ * TODO: отправка клиентам сообщения о том, что шифрование включено
  *
 */
 #include "server.h"
@@ -11,6 +11,8 @@ server::server(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->pbSend->setEnabled(false);
+    ui->cbEnc->setEnabled(false);
+    ui->cbMode->setEnabled(false);
     setTrayIconActions();
     showTrayIcon();
     show();
@@ -21,6 +23,7 @@ server::server(QWidget *parent) :
     connect(reply,SIGNAL(finished()),this,SLOT(replyFinished()));
     ui->tableWidget->setEnabled(false);
     connect(ui->cbMode,SIGNAL(clicked(bool)),ui->tableWidget,SLOT(setEnabled(bool)));
+    connect(ui->cbEnc,SIGNAL(clicked(bool)),this,SLOT(encChecked()));
     QIcon ico(QApplication::applicationDirPath()+"/ico.png");
     setWindowIcon(ico);
     ui->leNick->setValidator(valid);
@@ -30,18 +33,27 @@ server::~server()
     delete ui;
 }
 
+void server::encChecked(){
+    if (ui->cbEnc->isChecked()){
+        foreach (QTcpSocket* client, clientList) {
+                sendToClient(client, "//encryptionEnabled");
+        }
+        clientRequested = true;
+    }
+}
+
 void server::replyFinished(){
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
       if (reply->error() == QNetworkReply::NoError)
         {
             QByteArray content= reply->readAll();
             QTextCodec *codec = QTextCodec::codecForName("cp1251");
-         // ui->textBrowser->append("Current IP -"+codec->toUnicode(content.data()));
+            //ui->textBrowser->append("Current IP -"+codec->toUnicode(content.data()));
             QString data = codec->toUnicode(content.data());
             //data.chop(1);
             ui->le_Currentip->setText(data);
         }
-      else ui->textBrowser->append("[SYSTEM]Can't connect to IP looking server - <br>"+reply->errorString());
+      else ui->textBrowser->append("[SYSTEM]Can't connect to IP looking server: <br>"+reply->errorString());
       reply->deleteLater();
 }
 
@@ -63,7 +75,9 @@ void server::createServer(int port)
     QString msg =  QString::number(port);
     ui->textBrowser->append(QTime::currentTime().toString().toUtf8()+" - [SYSTEM]Server started. Your Port - " + msg +". Your IP - "+ui->le_Currentip->text());
     ui->pbSend->setEnabled(true);
-
+    ui->cbMode->setEnabled(true);
+    ui->cbEnc->setEnabled(true);
+    imServer = true;
 }
 
 void server::createClient(QString address, int port)
@@ -73,6 +87,7 @@ void server::createClient(QString address, int port)
     connect(cli, SIGNAL(connected()), SLOT(serverConnected()));
     connect(cli, SIGNAL(readyRead()), SLOT(readFromServer()));
     connect(ui->leMessage, SIGNAL(returnPressed()), SLOT(sendToServer()));
+    ui->pbSend->setEnabled(true);
 }
 
 void server::addNewClient()
@@ -101,7 +116,11 @@ void server::readFromClient()
     QTcpSocket* clientSocket = (QTcpSocket*)sender();
     QString message;
     if(clientSocket->bytesAvailable()){
+        if (ui->cbEnc->isChecked() && clientRequested){
+            message = QByteArray::fromBase64(clientSocket->readAll());
+        } else {
         message = clientSocket->readAll();
+        }
     }
     if (ui->cbMode->isChecked())
     {
@@ -135,16 +154,29 @@ void server::readFromClient()
 
 void server::sendToClient(QTcpSocket *client, QString message)
 {
-    if (ui->cbMode->isChecked()){client->write(message.toUtf8());} else {client->write(message.toUtf8());}
+    if (ui->cbEnc->isChecked() && clientRequested){
+        client->write(message.toUtf8().toBase64());
+    } else {
+        client->write(message.toUtf8());
+    }
 }
 
 void server::readFromServer()
 {
     QString message;
     if(cli->bytesAvailable()){
-        message = cli->readAll();
+        if (ui->cbEnc->isChecked() && clientRequested){
+        message = QByteArray::fromBase64(cli->readAll());
+        } else {
+            message = cli->readAll();
+        }
+        if (message == "//encryptionEnabled"){
+            clientRequested = true;
+            ui->cbEnc->setChecked(true);
+        } else {
         ui->textBrowser->append(message);
         trayIcon->showMessage("Новое сообщение",message,QSystemTrayIcon::Information,1000);
+        }
     }
 }
 
@@ -160,7 +192,11 @@ void server::sendToServer()
         if (!ui->leNick->text().isEmpty())
     {
     QString message = "["+ui->leNick->text()+"]"+ui->leMessage->text();
-    cli->write(message.toUtf8());
+    if (ui->cbEnc->isChecked() && clientRequested){
+        cli->write(message.toUtf8().toBase64());
+    } else {
+        cli->write(message.toUtf8());
+    }
     ui->leMessage->clear();
     } else {
         ui->textBrowser->append("[ERROR]\"Nickname\" or can't be empty");
@@ -175,6 +211,7 @@ void server::on_pbServer_clicked()
     createClient(ui->le_ip->text(),ui->lePort->text().toInt());
     ui->pbServer_create->setEnabled(false);
     ui->pbServer->setEnabled(false);
+    ui->cbEnc->setEnabled(false);
 }
 
 void server::on_pbServer_create_clicked()

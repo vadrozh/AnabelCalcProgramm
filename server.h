@@ -56,7 +56,7 @@ private slots:
     void trayActionExecute();
     void setTrayIconActions();
     void showTrayIcon();
-
+    void encChecked();
 protected:
     virtual void closeEvent(QCloseEvent *event);
 private:
@@ -69,6 +69,8 @@ private:
     QStringList data;
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
     QValidator *valid = new QRegExpValidator(QRegExp("[a-zA-Z0-9А-Яа-я ]+"),this);
+    bool clientRequested;
+    bool imServer;
 };
 
 #endif // SERVER_H

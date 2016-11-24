@@ -264,7 +264,20 @@ Server</string>
       </rect>
      </property>
      <property name="text">
-      <string>Table Mod</string>
+      <string>Table Mode</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="cbEnc">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>70</y>
+       <width>241</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Enable encryption(beta)</string>
      </property>
     </widget>
    </widget>
