@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
     MainTabWidget->setGeometry(0,0,1362,741);
 
 
-    MainTabWidget->show();
+   // MainTabWidget->show();
 
     ui->setupUi(this);
     ui->mainToolBar->hide();
